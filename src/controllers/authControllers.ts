@@ -62,11 +62,6 @@ export const login = async (req: Request, res: Response) => {
         message: 'Внутренняя ошибка сервера',
       });
     }
-  } else {
-    res.status(400).send({
-      is_success: false,
-      message: 'Отсутствует имя пользователя или пароль',
-    });
   }
 };
 
@@ -92,9 +87,7 @@ export const me = async (req: any, res: Response) => {
     }
 
     // Возврат информации о пользователе
-    res.json(
-      user,
-    );
+    res.json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({
