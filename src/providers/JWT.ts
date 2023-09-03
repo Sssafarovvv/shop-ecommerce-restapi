@@ -50,34 +50,4 @@ export default class JWT {
       next();
     });
   }
-
-  async authenticateSocketToken(socket: any, next: any) {
-    if (socket.handshake.query && socket.handshake.query.token) {
-      const token = socket.handshake.query.token;
-      jwt.verify(token, process.env.JWT_SECRET as string, async (err: any, user: any) => {
-        if (err) {
-          socket.disconnect();
-          return next(new Error('Authentication error'));
-        }
-
-        const foundUser = await users.findOne({ username: user.username }).lean();
-        if (!foundUser) {
-          socket.disconnect();
-          return next(new Error('Authentication error'));
-        }
-
-        const passwordMatch = await bcrypt.compare(user.password, foundUser.password);
-        if (!passwordMatch) {
-          socket.disconnect();
-          return next(new Error('Authentication error'));
-        }
-
-        socket.user = user;
-        next();
-      });
-    } else {
-      socket.disconnect();
-      return next(new Error('Authentication error'));
-    }
-  }
 }

@@ -8,29 +8,30 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import path from 'path';
 import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/orderRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import orderRotes from './routes/orderRoutes.js';
 import { ConnectOptions } from 'mongoose';
-import http from 'http';
+import https from 'http';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-
-const PORT = process.env.PORT || 6001;
-const MONGO_URL = process.env.MONGO_URL || '';
 dotenv.config();
+
+
+/* SERVER SETUP */
 const app = express();
 
-const httpServer: any = http.createServer(app);
+const httpServer: any = https.createServer(app);
 
-httpServer.listen(PORT, function () {
-  console.log(`Listening to port ${PORT}`);
+httpServer.listen(process.env.PORT || 6001, function () {
+  console.log(`Listening to port ${process.env.PORT || 6001}`);
 });
 
+/* POLITICS SETUP */
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-const allowedOrigins = '*';
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: process.env.ALLOWED_ORIGINS as string,
   }),
 );
 const __filename = fileURLToPath(import.meta.url);
@@ -41,17 +42,21 @@ app.use(bodyParser.urlencoded({ limit: '8mb', extended: true }));
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
 /* ROUTES */
-app.use(errorHandler)
 app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
+app.use('/user', userRoutes);
+app.use('/orders', orderRotes);
+app.use(errorHandler);
 
 /* MONGOOSE SETUP */
 mongoose
-  .connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions)
+  .connect(
+    process.env.MONGO_URL as string,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    } as ConnectOptions,
+  )
   .then(() => {
-    console.log(`Удалось соединиться`);
+    console.log(`Connected to database`);
   })
-  .catch((error) => console.log(`${error} не удалось соединиться`));
+  .catch((error) => console.log(`${error} Didn't connect to database`));
