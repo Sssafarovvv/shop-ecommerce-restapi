@@ -8,16 +8,17 @@ export const saveProductInDB = async (req: any, res: Response) => {
     const errorProducts = [];
 
     for (const product of products) {
+      if (!product.price || !product.img || !product.weights || !product.total || !product.name) {
+        errorProducts.push(product);
+      }
+
       const newProduct = await Product.create({
+        name: product.name,
         img: product.img,
         price: product.price,
         weights: product.weights.map((weight: number[]) => weight),
         total: product.total,
       });
-
-      if (!product.price || !product.img || !product.weights || !product.total) {
-        errorProducts.push(product);
-      }
 
       savedProducts.push(newProduct);
     }

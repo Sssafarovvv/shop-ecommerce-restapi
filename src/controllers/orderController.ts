@@ -25,3 +25,46 @@ export const getOrders = async (req: any, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const setOrderLocation = async (req: any, res: Response) => {
+  try {
+    const { location, id } = req.body;
+
+    const order = await Order.findByIdAndUpdate(id, { $set: { location } }).populate('Product');
+
+    if (!order) {
+      throw new Error(`No such order with this id: ${id}`);
+    }
+
+    order?.save();
+
+    res.json(order);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+/*needs further refactoring and purchases implementations*/
+export const acceptOrder = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findByIdAndUpdate(id, { $set: { status: 'accepted' } });
+    // Handle success response
+    res.status(200).json({ message: 'Order accepted successfully', order });
+  } catch (error) {
+    // Handle error response
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+export const denyOrder = async (req: any, res: Response) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findByIdAndUpdate(id, { $set: { status: 'denied' } });
+    // Handle success response
+    res.status(200).json({ message: 'Order denied successfully', order });
+  } catch (error) {
+    // Handle error response
+    res.status(500).json({ error: 'An error occurred' });
+  }
+};

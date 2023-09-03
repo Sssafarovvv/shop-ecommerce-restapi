@@ -1,3 +1,4 @@
+import { errorHandler } from './providers/errorHandler.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
@@ -40,6 +41,7 @@ app.use(bodyParser.urlencoded({ limit: '8mb', extended: true }));
 app.use('/assets', express.static(path.join(__dirname, '/assets')));
 
 /* ROUTES */
+app.use(errorHandler)
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 

@@ -5,13 +5,17 @@ const OrderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  destination: { type: String, required: true },
+  destination: { type: String, required: false },
   currentLocation: { type: String, required: true },
   status: {
     type: String,
     enum: ['accepted', 'denied', 'processing'],
     required: true,
   },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Prodcut"
+  }
 });
 
 const Order = mongoose.model('Order', OrderSchema);
