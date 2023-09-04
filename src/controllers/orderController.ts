@@ -49,10 +49,8 @@ export const acceptOrder = async (req: any, res: Response) => {
   try {
     const { id } = req.params;
     const order = await Order.findByIdAndUpdate(id, { $set: { status: 'accepted' } });
-    // Handle success response
     res.status(200).json({ message: 'Order accepted successfully', order });
   } catch (error) {
-    // Handle error response
     res.status(500).json({ error: 'An error occurred' });
   }
 };
@@ -61,10 +59,8 @@ export const denyOrder = async (req: any, res: Response) => {
   try {
     const { id } = req.params;
     const order = await Order.findByIdAndUpdate(id, { $set: { status: 'denied' } });
-    // Handle success response
     res.status(200).json({ message: 'Order denied successfully', order });
   } catch (error) {
-    // Handle error response
     res.status(500).json({ error: 'An error occurred' });
   }
 };
