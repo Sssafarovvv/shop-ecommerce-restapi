@@ -28,7 +28,8 @@ export const getOrders = async (req: any, res: Response) => {
 
 export const setOrderLocation = async (req: any, res: Response) => {
   try {
-    const { location, id } = req.body;
+    const { location } = req.body;
+    const { id } = req.params;
 
     const order = await Order.findByIdAndUpdate(id, { $set: { location } }).populate('Product');
 

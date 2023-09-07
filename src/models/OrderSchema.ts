@@ -6,7 +6,7 @@ const OrderSchema = new mongoose.Schema({
     ref: 'User',
   },
   destination: { type: String, required: false },
-  currentLocation: { type: String, required: true },
+  location: { type: String, required: true },
   status: {
     type: String,
     enum: ['accepted', 'denied', 'processing'],
