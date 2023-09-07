@@ -51,7 +51,7 @@ export const postReview = async (req: any, res: Response) => {
 
 export const getReviews = async (req: any, res: Response) => {
   try {
-    const { productId } = req.body;
+    const { productId } = req.params;
     const reviews = await Review.find(productId).populate('user').exec();
 
     res.status(200).json(reviews);

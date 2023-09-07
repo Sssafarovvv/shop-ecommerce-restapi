@@ -41,8 +41,6 @@ export const login = async (req: Request, res: Response) => {
         let jwt = new JWT();
         if (passwordMatch) {
           const token = await jwt.generateAccessToken(user.email, user.password, user._id.toString());
-
-          // res.status(200).send({ token, user });
           res.status(200).send(token);
         } else {
           res.status(400).send({
@@ -65,10 +63,10 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-/* GETTING USER AFTER AUTH. */
+/* GETTING USER AFTER AUTH */
 export const me = async (req: any, res: Response) => {
   try {
-    // Проверка наличия аутентификации
+
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -76,7 +74,6 @@ export const me = async (req: any, res: Response) => {
       });
     }
 
-    // Получение информации о текущем пользователе
     const user = await User.findOne({ email: req.user.email });
 
     if (!user) {
@@ -86,7 +83,6 @@ export const me = async (req: any, res: Response) => {
       });
     }
 
-    // Возврат информации о пользователе
     res.json(user);
   } catch (error) {
     console.error(error);

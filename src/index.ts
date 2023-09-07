@@ -14,15 +14,17 @@ import { ConnectOptions } from 'mongoose';
 import https from 'http';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { handleShutdown } from './providers/shutdownHandler.js';
+import { createHttpTerminator } from 'http-terminator';
 dotenv.config();
-
 
 /* SERVER SETUP */
 const app = express();
-
-const httpServer: any = https.createServer(app);
-
-httpServer.listen(process.env.PORT || 6001, function () {
+export const server = https.createServer(app);
+export const httpTerminator = createHttpTerminator({
+  server,
+});
+server.listen(process.env.PORT || 6001, function () {
   console.log(`Listening to port ${process.env.PORT || 6001}`);
 });
 
@@ -46,6 +48,10 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/orders', orderRotes);
 app.use(errorHandler);
+
+/* Capture OS interrupt signals */
+process.on('SIGINT', handleShutdown);
+process.on('SIGTERM', handleShutdown);
 
 /* MONGOOSE SETUP */
 mongoose
